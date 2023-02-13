@@ -40,31 +40,6 @@ import (
 	"sigs.k8s.io/gateway-api/conformance/utils/config"
 )
 
-// GatewayRef is a tiny type for specifying an HTTP Route ParentRef without
-// relying on a specific api version.
-type GatewayRef struct {
-	types.NamespacedName
-	listenerNames []*v1beta1.SectionName
-}
-
-// NewGatewayRef creates a GatewayRef resource.  ListenerNames are optional.
-func NewGatewayRef(nn types.NamespacedName, listenerNames ...string) GatewayRef {
-	var listeners []*v1beta1.SectionName
-
-	if len(listenerNames) == 0 {
-		listenerNames = append(listenerNames, "")
-	}
-
-	for _, listener := range listenerNames {
-		sectionName := v1beta1.SectionName(listener)
-		listeners = append(listeners, &sectionName)
-	}
-	return GatewayRef{
-		NamespacedName: nn,
-		listenerNames:  listeners,
-	}
-}
-
 // GWCMustBeAcceptedConditionTrue waits until the specified GatewayClass has an Accepted condition set with a status value equal to True.
 func GWCMustHaveAcceptedConditionTrue(t *testing.T, c client.Client, timeoutConfig config.TimeoutConfig, gwcName string) string {
 	return gwcMustBeAccepted(t, c, timeoutConfig, gwcName, string(metav1.ConditionTrue))
@@ -200,7 +175,13 @@ func NamespacesMustBeAccepted(t *testing.T, c client.Client, timeoutConfig confi
 
 				// Passing an empty string as the Reason means that any Reason will do.
 				if !findConditionInList(t, gw.Status.Conditions, string(v1beta1.GatewayConditionAccepted), "True", "") {
-					t.Logf("%s/%s Gateway not ready yet", ns, gw.Name)
+					t.Logf("%s/%s Gateway not Accepted yet", ns, gw.Name)
+					return false, nil
+				}
+
+				// Passing an empty string as the Reason means that any Reason will do.
+				if !findConditionInList(t, gw.Status.Conditions, string(v1beta1.GatewayConditionProgrammed), "True", "") {
+					t.Logf("%s/%s Gateway not Programmed yet", ns, gw.Name)
 					return false, nil
 				}
 			}
