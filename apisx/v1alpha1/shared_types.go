@@ -37,6 +37,8 @@ type (
 	// +k8s:deepcopy-gen=false
 	PortNumber = v1.PortNumber
 	// +k8s:deepcopy-gen=false
+	OptionalPortNumber = v1.OptionalPortNumber
+	// +k8s:deepcopy-gen=false
 	ProtocolType = v1.ProtocolType
 	// +k8s:deepcopy-gen=false
 	RouteGroupKind = v1.RouteGroupKind

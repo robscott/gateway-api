@@ -232,6 +232,13 @@ type CommonRouteSpec struct {
 // +kubebuilder:validation:Maximum=65535
 type PortNumber int32
 
+// OptionalPortNumber defines a network port. A value of "0" should be
+// interpreted as unspecified.
+//
+// +kubebuilder:validation:Minimum=0
+// +kubebuilder:validation:Maximum=65535
+type OptionalPortNumber int32
+
 // BackendRef defines how a Route should forward a request to a Kubernetes
 // resource.
 //

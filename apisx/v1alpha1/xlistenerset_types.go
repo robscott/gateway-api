@@ -129,7 +129,7 @@ type ListenerEntry struct {
 	// same port, subject to the Listener compatibility rules.
 	//
 	// +optional
-	Port PortNumber `json:"port,omitempty"`
+	Port OptionalPortNumber `json:"port,omitempty"`
 
 	// Protocol specifies the network protocol this listener expects to receive.
 	Protocol ProtocolType `json:"protocol"`
